@@ -40,6 +40,7 @@ class RegisterTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16), // Sudut lebih besar
                 ),
                 elevation: 5,
+                // ignore: deprecated_member_use
                 shadowColor: const Color(0xFF3B82F6).withOpacity(0.4),
               ),
               child: const Text(

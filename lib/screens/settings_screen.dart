@@ -41,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
             title: 'Logout',
             color: Colors.red,
             onTap: () {
-              // TODO: Tambahkan logika logout
+              // TODO: #1 Tambahkan logika logout
             },
           ),
         ],

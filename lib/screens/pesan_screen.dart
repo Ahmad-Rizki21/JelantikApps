@@ -21,6 +21,7 @@ class PesanScreen extends StatelessWidget {
             ),
             title: Text('Customer Service ${index + 1}'),
             subtitle: const Text('Ini adalah contoh isi pesan...'),
+            // ignore: unnecessary_brace_in_string_interps
             trailing: Text('12:3${index} PM'),
             onTap: () {},
           );
