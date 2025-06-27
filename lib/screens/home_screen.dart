@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isAccountSwitcherOpen = false;
+
+  // PERUBAHAN: Fungsi ini sekarang hanya mengubah state untuk menampilkan/menyembunyikan popup
+  void _toggleAccountSwitcher() {
+    setState(() {
+      _isAccountSwitcherOpen = !_isAccountSwitcherOpen;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Mendapatkan tinggi AppBar dan status bar untuk penempatan popup yang akurat
+    final double topPadding = MediaQuery.of(context).padding.top;
+    final double appBarHeight = AppBar().preferredSize.height;
+    // Perkiraan posisi vertikal popup: di bawah AppBar + padding + tinggi kartu profil
+    const double profileCardHeight = 68.0; 
+    final double popupTopPosition = topPadding + appBarHeight + profileCardHeight + 8;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -25,81 +46,185 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: const Color(0xFFF3F4F6),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      // PERUBAHAN UTAMA: Menggunakan Stack untuk menumpuk popup
+      body: Stack(
         children: [
-          _buildProfileCard(),
-          const SizedBox(height: 24),
-          _buildSubscriptionCard(),
-          const SizedBox(height: 24),
-          _buildSpecialOfferSection(),
-          const SizedBox(height: 24),
+          // Konten utama
+          ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            children: [
+              _buildProfileCard(),
+              const SizedBox(height: 24),
+              _buildSubscriptionCard(),
+              const SizedBox(height: 24),
+              _buildSpecialOfferSection(),
+              const SizedBox(height: 24),
+            ],
+          ),
+
+          // Lapisan Overlay Popup
+          if (_isAccountSwitcherOpen)
+            // Latar belakang transparan untuk menutup popup saat diklik
+            GestureDetector(
+              onTap: _toggleAccountSwitcher,
+              child: Container(
+                color: Colors.black.withOpacity(0.2),
+              ),
+            ),
+          
+          // Popup yang dianimasikan
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            top: _isAccountSwitcherOpen ? popupTopPosition : -300, // Muncul dari atas
+            left: 16,
+            right: 16,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              opacity: _isAccountSwitcherOpen ? 1.0 : 0.0,
+              child: _buildAccountSwitcherContent(),
+            ),
+          ),
         ],
       ),
     );
   }
 
-Widget _buildProfileCard() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-    decoration: BoxDecoration(
-      color: Colors.white,
+  Widget _buildProfileCard() {
+    return InkWell(
+      onTap: _toggleAccountSwitcher, // Memanggil fungsi untuk toggle popup
       borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.08),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+      child: Container(
+        height: 68, // Memberi tinggi pasti agar posisi popup akurat
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: AssetImage('assets/images/Ellipse 245.png'),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Hi, Aryan Sulaiman',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  color: Color(0xFF1F2937),
-                ),
-              ),
-              const SizedBox(height: 2),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 20,
+              backgroundImage: AssetImage('assets/images/Ellipse 245.png'),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/Line 1.png',
-                    width: 15,
-                    height: 15,
-                  ),
-                  const SizedBox(width: 4),
                   const Text(
-                    '1222502221027',
+                    'Hi, Aryan Sulaiman',
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
                       color: Color(0xFF1F2937),
-                      fontSize: 13,
                     ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        '1222502221027',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF1F2937),
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      AnimatedRotation(
+                        turns: _isAccountSwitcherOpen ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 300),
+                        child: const Icon(Icons.arrow_drop_down, color: Color(0xFF6B7280)),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
+
+  // Widget untuk konten popup
+  Widget _buildAccountSwitcherContent() {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text(
+            'Pilih akun',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1F2937),
+            ),
+          ),
+          SizedBox(height: 16),
+          Divider(color: Color(0xFFE5E7EB), thickness: 1),
+          SizedBox(height: 16),
+          Text(
+            'Aryan Sulaiman',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF3B82F6),
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            '1222502221027',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1F2937),
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'aryan@gmail.com',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1F2937),
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Aktif hingga 28 Des 2025',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildSubscriptionCard() {
     return Container(
