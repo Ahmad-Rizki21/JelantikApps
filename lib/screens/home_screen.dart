@@ -90,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
   Widget _buildProfileCard() {
     return InkWell(
       onTap: _toggleAccountSwitcher, // Memanggil fungsi untuk toggle popup
@@ -132,6 +133,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      AnimatedRotation(
+                        turns: _isAccountSwitcherOpen ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 300),
+                        child: Image.asset(
+                          'assets/images/Line 1.png',
+                          width: 25,
+                          height: 10,
+                        ),
+                      ),
                       const Text(
                         '1222502221027',
                         style: TextStyle(
@@ -140,12 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 13,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      AnimatedRotation(
-                        turns: _isAccountSwitcherOpen ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 300),
-                        child: const Icon(Icons.arrow_drop_down, color: Color(0xFF6B7280)),
-                      ),
+                      const SizedBox(width: 5),
                     ],
                   ),
                 ],
