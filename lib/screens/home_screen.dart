@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/paket_saya_screen.dart'; // Impor halaman "Paket Saya"
+import 'package:flutter_application_1/screens/pilih_paket_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -229,7 +231,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF2563EB),
           ),
         ),
-        SizedBox(height: 4), // REVISI: Mengurangi jarak
+        SizedBox(height: 4),
         Text(
           '1222502221027',
           style: TextStyle(
@@ -238,7 +240,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF111827),
           ),
         ),
-        SizedBox(height: 4), // REVISI: Mengurangi jarak
+        SizedBox(height: 4),
         Text(
           'ahmad.rizki21@gmail.com',
           style: TextStyle(
@@ -247,7 +249,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF111827),
           ),
         ),
-        SizedBox(height: 4), // REVISI: Mengurangi jarak
+        SizedBox(height: 4),
         Text(
           'Aktif hingga 28 Jun 2025',
           style: TextStyle(
@@ -385,24 +387,33 @@ class _SubscriptionInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+    // REVISI: Membungkus Container dengan InkWell untuk navigasi
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PaketSayaScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
         ),
-      ),
-      child: const Row(
-        children: [
-          _CustomCircleIcon(),
-          SizedBox(width: 12),
-          _InternetInfo(),
-          _BroadbandInfo(),
-          SizedBox(width: 8),
-          _LineIndicator(),
-        ],
+        child: const Row(
+          children: [
+            _CustomCircleIcon(),
+            SizedBox(width: 12),
+            _InternetInfo(),
+            _BroadbandInfo(),
+            SizedBox(width: 8),
+            _LineIndicator(),
+          ],
+        ),
       ),
     );
   }
@@ -606,7 +617,12 @@ class _ViewAllPromoButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PilihPaketScreen()),
+          );
+        },
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           alignment: Alignment.centerLeft,

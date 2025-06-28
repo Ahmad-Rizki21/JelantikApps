@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/paket_saya_screen.dart';
+import 'package:flutter_application_1/screens/pilih_paket_screen.dart';
 import 'home_screen.dart';
 import 'history_screen.dart';
 import 'pesan_screen.dart';
@@ -19,6 +21,8 @@ class _MainScreenState extends State<MainScreen> {
     HistoryScreen(),
     PesanScreen(),
     SettingsScreen(),
+    PilihPaketScreen(),
+    PaketSayaScreen()
   ];
 
   void _onItemTapped(int index) {
