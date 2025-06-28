@@ -229,7 +229,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF2563EB),
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 4), // REVISI: Mengurangi jarak
         Text(
           '1222502221027',
           style: TextStyle(
@@ -238,7 +238,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF111827),
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 4), // REVISI: Mengurangi jarak
         Text(
           'ahmad.rizki21@gmail.com',
           style: TextStyle(
@@ -247,7 +247,7 @@ class _AccountInfo extends StatelessWidget {
             color: Color(0xFF111827),
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 4), // REVISI: Mengurangi jarak
         Text(
           'Aktif hingga 28 Jun 2025',
           style: TextStyle(
