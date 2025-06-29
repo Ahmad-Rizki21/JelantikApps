@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+// 1. Impor widget navigasi kustom Anda
+import 'package:flutter_application_1/widgets/custom_bottom_navigation.dart'; 
+// Impor MainScreen untuk navigasi kembali
+import 'package:flutter_application_1/screens/main_screen.dart'; 
 
 class PaketSayaScreen extends StatefulWidget {
   const PaketSayaScreen({super.key});
@@ -9,7 +13,8 @@ class PaketSayaScreen extends StatefulWidget {
 
 class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final int _bottomNavIndex = 0; // State untuk Bottom Navigation Bar
+  // State untuk Bottom Navigation Bar, di halaman ini Home (indeks 0) selalu aktif
+  final int _bottomNavIndex = 0; 
 
   @override
   void initState() {
@@ -25,28 +30,17 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
   
   // Method untuk menangani tap pada item navigasi bawah
   void _onItemTapped(int index) {
-    if (index != _bottomNavIndex) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-    }
-  }
-
-  // Widget helper untuk membuat item navigasi, sama seperti di MainScreen
-  BottomNavigationBarItem _buildNavItem(String iconPath, String label, int index) {
-    final bool isSelected = _bottomNavIndex == index;
-    final Color color = isSelected ? const Color(0xFF3B82F6) : Colors.grey;
-
-    return BottomNavigationBarItem(
-      icon: Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: ImageIcon(
-          AssetImage(iconPath),
-          color: color,
-        ),
-      ),
-      label: label,
+    // Navigasi kembali ke MainScreen. 
+    // Idealnya, gunakan state management (Provider, Bloc, dll.) untuk memberitahu
+    // MainScreen agar pindah ke tab yang sesuai dengan `index` yang diklik.
+    // Untuk saat ini, kita hanya kembali ke tumpukan navigasi awal.
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+      (route) => false,
     );
   }
 
+  // Hapus _buildNavItem karena sudah ada di dalam CustomBottomNavigation
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +59,7 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 20, // Sedikit memperbesar font agar lebih menonjol
+            fontSize: 20,
           ),
         ),
         bottom: TabBar(
@@ -85,61 +79,37 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Konten untuk tab "Aktif"
           _buildAktifTab(),
-          // Placeholder untuk tab "Terjadwal"
           const Center(
             child: Text('Tidak ada paket yang dijadwalkan.'),
           ),
         ],
       ),
-      // REVISI: Menambahkan BottomNavigationBar yang sama dengan MainScreen
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            top: BorderSide(color: Colors.grey.shade200, width: 1.0),
-          ),
-        ),
-        child: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            _buildNavItem('assets/images/Home.png', 'Home', 0),
-            _buildNavItem('assets/images/History.png', 'History', 1),
-            _buildNavItem('assets/images/Pesan.png', 'Pesan', 2),
-            _buildNavItem('assets/images/Settings.png', 'Settings', 3),
-          ],
-          currentIndex: _bottomNavIndex,
-          onTap: _onItemTapped,
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          elevation: 0,
-        ),
+      // 2. Gunakan widget kustom yang sudah dibuat
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: _bottomNavIndex, // Indeks 'Home'
+        onTap: _onItemTapped,
       ),
     );
   }
 
-  // Widget untuk membangun konten tab "Aktif"
+  // Widget untuk membangun konten tab "Aktif" (tidak berubah)
   Widget _buildAktifTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-           color: Colors.white,
-           borderRadius: BorderRadius.circular(16),
-           boxShadow: [
-             BoxShadow(
-               // ignore: deprecated_member_use
-               color: Colors.black.withOpacity(0.30),
-               blurRadius: 50,
-               spreadRadius: 1,
-               offset: const Offset(0, 5),
-             ),
-           ],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              // ignore: deprecated_member_use
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,16 +123,15 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
               ),
             ),
             const SizedBox(height: 8),
-            // REVISI: Membuat seluruh teks deskripsi menjadi tebal
-           const Text.rich(
+            const Text.rich(
               TextSpan(
-                style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)), // Gaya default
+                style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
                 children: <TextSpan>[
                   TextSpan(
                     text: 'Broadband UpTo | 10 Mbps',
-                    style: TextStyle(fontWeight: FontWeight.bold), // Bagian yang tebal
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(text: ' | 1 Bulan'), // Bagian yang tidak tebal
+                  TextSpan(text: ' | 1 Bulan'),
                 ],
               ),
             ),
@@ -186,7 +155,7 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
                   ),
                 ),
                 TextButton(
-                   style: TextButton.styleFrom(
+                  style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     alignment: Alignment.centerRight
@@ -194,9 +163,8 @@ class _PaketSayaScreenState extends State<PaketSayaScreen> with SingleTickerProv
                   onPressed: () {},
                   child: const Text(
                     'Jadwalkan',
-                     style: TextStyle(
+                    style: TextStyle(
                       color: Color(0xFF3B82F6),
-                      // REVISI: Memastikan teks tombol tebal
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),

@@ -24,7 +24,7 @@ class PilihPaketScreen extends StatefulWidget {
 
 class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _bottomNavIndex = 0; // State untuk Bottom Navigation Bar
+  final int _bottomNavIndex = 0; // State untuk Bottom Navigation Bar
 
   // Data contoh untuk setiap tab
   final List<Paket> _internetPaket = [
@@ -181,6 +181,7 @@ class _PaketCard extends StatelessWidget {
         // REVISI: Menyesuaikan bayangan agar lebih lembut dan menyebar
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: const Color.fromARGB(255, 93, 92, 92).withOpacity(0.50),
             blurRadius: 50,
             spreadRadius: 5,
@@ -230,6 +231,7 @@ class _PaketCard extends StatelessWidget {
                 'assets/images/lightning-bolt.png',
                 width: 36,
                 height: 36,
+                // ignore: deprecated_member_use
                 color: Colors.grey.withOpacity(0.5),
               ),
             ],

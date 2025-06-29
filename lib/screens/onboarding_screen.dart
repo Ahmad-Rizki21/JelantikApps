@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'login_screen.dart'; // Import login screen
+import 'login_screen.dart'; // Pastikan file ini ada di proyek Anda
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -16,12 +16,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Data untuk setiap halaman onboarding
   final List<Map<String, String>> _pageData = [
     {
-      "image": "assets/images/Pebble.png",
+      "image": "assets/images/Pebble.png", // Pastikan path gambar ini benar
       "title": "Hidupkan Setiap Detik",
       "subtitle": "We are here ready serve you order 24 hour nonstop so you can enjoy your holidays.",
     },
     {
-      "image": "assets/images/Wormies.png",
+      "image": "assets/images/Wormies.png", // Pastikan path gambar ini benar
       "title": "Dengan Kecepatan Terbaik",
       "subtitle": "Do whatever you like and we protect your data from various threats.",
     }
@@ -39,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: const Color(0xFFE0F2FE), // Warna biru muda untuk background
       body: Stack(
         children: [
-          // Bagian atas dengan gambar
+          // Bagian atas dengan gambar dan teks
           PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -50,7 +50,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             itemCount: _pageData.length,
             itemBuilder: (context, index) {
               return Container(
-                padding: const EdgeInsets.only(bottom: 200), // Beri ruang untuk kartu putih
+                // Memberi padding agar gambar tidak terlalu ke atas dan ada ruang untuk kartu
+                padding: const EdgeInsets.only(bottom: 250, top: 100), 
                 alignment: Alignment.center,
                 child: Image.asset(
                   _pageData[index]['image']!,
@@ -74,7 +75,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             left: 0,
             right: 0,
             child: Container(
-              height: 300, // Tinggi kartu putih
+              height: 320, // Sedikit menambah tinggi kartu untuk layout yang lebih baik
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -106,9 +107,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 50), // Menambah jarak ke tombol
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SmoothPageIndicator(
                           controller: _pageController,
@@ -121,33 +123,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             activeDotColor: Color(0xFF3B82F6),
                           ),
                         ),
-                        SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_currentPage == _pageData.length - 1) {
-                                _navigateToLogin();
-                              } else {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
-                            // PERUBAHAN: Menyesuaikan bentuk tombol
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              padding: EdgeInsets.zero,
-                              backgroundColor: const Color(0xFF3B82F6),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 32,
-                            ),
+                        // REVISI: Menggunakan GestureDetector karena aset gambar sudah berupa tombol
+                        GestureDetector(
+                          onTap: () {
+                            if (_currentPage == _pageData.length - 1) {
+                              _navigateToLogin();
+                            } else {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          child: Image.asset(
+                            'assets/images/Next.png', // Menggunakan aset gambar tombol yang sudah jadi
+                            width: 60,
+                            height: 60,
                           ),
                         ),
                       ],

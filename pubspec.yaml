@@ -46,6 +46,7 @@ flutter:
     - assets/images/Mask Group.png
     - assets/images/lightning-bolt.png
     - assets/images/Line 1.png
+     - assets/images/Next.png
 
 fonts:
     - family: Poppins
