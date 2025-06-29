@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/paket_model.dart' as model; // Menggunakan alias untuk menghindari konflik nama
+import 'package:flutter_application_1/screens/detail_paket_screen.dart';
 
-// Model untuk data paket
+// Model lokal untuk data paket di halaman ini
 class Paket {
   final String nama;
   final String kecepatan;
@@ -24,9 +26,9 @@ class PilihPaketScreen extends StatefulWidget {
 
 class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final int _bottomNavIndex = 0; // State untuk Bottom Navigation Bar
+  final int _bottomNavIndex = 0; 
 
-  // Data contoh untuk setiap tab
+  // Data untuk setiap tab
   final List<Paket> _internetPaket = [
     Paket(nama: 'Lighting', kecepatan: '10 Mbps', harga: 'Rp 166,500* / Bulan', isPromo: true),
     Paket(nama: 'Speedo', kecepatan: '20 Mbps', harga: 'Rp 231,990* / Bulan', isPromo: true),
@@ -40,8 +42,8 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
   ];
   
   final List<Paket> _channelPaket = [
-     Paket(nama: 'Basic Channels', kecepatan: '50+ Channels', harga: 'Rp 50,000* / Bulan'),
-     Paket(nama: 'Premium Channels', kecepatan: '100+ Channels', harga: 'Rp 150,000* / Bulan'),
+      Paket(nama: 'Basic Channels', kecepatan: '50+ Channels', harga: 'Rp 50,000* / Bulan'),
+      Paket(nama: 'Premium Channels', kecepatan: '100+ Channels', harga: 'Rp 150,000* / Bulan'),
   ];
 
 
@@ -57,14 +59,14 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
     super.dispose();
   }
 
-  // Method untuk menangani tap pada item navigasi bawah
+  // NOTE: Bottom Nav Bar biasanya dikelola oleh screen utama (induk)
+  // untuk menghindari duplikasi seperti yang terjadi sebelumnya.
   void _onItemTapped(int index) {
     if (index != _bottomNavIndex) {
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 
-  // Widget helper untuk membuat item navigasi, sama seperti di MainScreen
   BottomNavigationBarItem _buildNavItem(String iconPath, String label, int index) {
     final bool isSelected = _bottomNavIndex == index;
     final Color color = isSelected ? const Color(0xFF3B82F6) : Colors.grey;
@@ -84,7 +86,7 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF9FAFB), // Warna background lebih sesuai
       appBar: AppBar(
         title: const Text(
           'Pilih Paket',
@@ -95,7 +97,9 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
           ),
         ),
         backgroundColor: Colors.white,
-        elevation: 0,
+        surfaceTintColor: Colors.white,
+        elevation: 1,
+        shadowColor: Colors.grey.withOpacity(0.2),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF1F2937)),
           onPressed: () => Navigator.of(context).pop(),
@@ -121,7 +125,6 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
           _buildPaketList(_channelPaket),
         ],
       ),
-      // REVISI: Menambahkan BottomNavigationBar
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -142,6 +145,8 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: true,
           showUnselectedLabels: true,
+          selectedItemColor: const Color(0xFF3B82F6),
+          unselectedItemColor: Colors.grey,
           selectedFontSize: 12,
           unselectedFontSize: 12,
           elevation: 0,
@@ -150,7 +155,6 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
     );
   }
 
-  // Widget untuk membangun daftar paket
   Widget _buildPaketList(List<Paket> paketList) {
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
@@ -163,7 +167,6 @@ class _PilihPaketScreenState extends State<PilihPaketScreen> with SingleTickerPr
   }
 }
 
-// Widget untuk kartu paket kustom
 class _PaketCard extends StatelessWidget {
   const _PaketCard({required this.paket});
 
@@ -171,106 +174,118 @@ class _PaketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        // REVISI: Menggunakan warna putih agar bayangan terlihat jelas
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        // REVISI: Menyesuaikan bayangan agar lebih lembut dan menyebar
-        boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: const Color.fromARGB(255, 93, 92, 92).withOpacity(0.50),
-            blurRadius: 50,
-            spreadRadius: 5,
-            offset: const Offset(0, 10),
+    return InkWell(
+      onTap: () {
+        // NAVIGASI: Pindah ke DetailPaketScreen dengan membawa data
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailPaketScreen(
+              // Konversi dari model lokal ke model bersama
+              paket: model.Paket(
+                title: paket.nama,
+                speed: paket.kecepatan,
+                price: paket.harga,
+                isPromo: paket.isPromo,
+                description: '(Paket Internet ${paket.nama} dengan kecepatan ${paket.kecepatan} berlangganan selama 1 Bulan)'
+              ),
+            ),
           ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      paket.nama,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF9CA3AF).withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 2,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        paket.nama,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1F2937),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Broadband UpTo | ${paket.kecepatan}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF4B5563),
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 6),
+                      Text(
+                        'Broadband UpTo | ${paket.kecepatan}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF4B5563),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      paket.harga,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF3B82F6),
+                      const SizedBox(height: 8),
+                      Text(
+                        paket.harga,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF3B82F6),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Image.asset(
-                'assets/images/lightning-bolt.png',
-                width: 36,
-                height: 36,
-                // ignore: deprecated_member_use
-                color: Colors.grey.withOpacity(0.5),
-              ),
-            ],
-          ),
-          if (paket.isPromo) const _PromoTag(),
-        ],
+                Image.asset(
+                  'assets/images/lightning-bolt.png',
+                  width: 36,
+                  height: 36,
+                  color: Colors.grey.withOpacity(0.5),
+                ),
+              ],
+            ),
+            if (paket.isPromo) const _PromoTag(),
+          ],
+        ),
       ),
     );
   }
 }
 
-// Widget baru untuk tag promo menggunakan gambar aset
 class _PromoTag extends StatelessWidget {
   const _PromoTag();
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: -27,
-      right: -26,
+      top: -16, 
+      right: -16,
       child: Container(
-        width: 300,
-        height: 110,
-        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/Mask Group.png'),
-            fit: BoxFit.cover,
+          color: Colors.red,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(12),
           ),
         ),
-        child: const Align(
-          alignment: Alignment(0.8, -0.8),
-          child: Text(
-            'Promo',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
+        child: const Text(
+          'Promo',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
           ),
         ),
       ),

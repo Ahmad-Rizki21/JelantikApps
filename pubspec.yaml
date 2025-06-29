@@ -32,6 +32,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  font_awesome_flutter: ^10.7.0 
   
 
 flutter:
@@ -45,8 +46,10 @@ flutter:
     - assets/images/Ellipse 245.png
     - assets/images/Mask Group.png
     - assets/images/lightning-bolt.png
-    - assets/images/Line 1.png
-     - assets/images/Next.png
+    - assets/images/Rectangle 2806.png
+    - assets/images/Rectangle 2805.png
+    # - assets/images/Line 1.png
+    #  - assets/images/Next.png
 
 fonts:
     - family: Poppins

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/paket_saya_screen.dart'; // Impor halaman "Paket Saya"
+import 'package:flutter_application_1/screens/paket_saya_screen.dart';
 import 'package:flutter_application_1/screens/pilih_paket_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,37 +22,44 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final double topPadding = MediaQuery.of(context).padding.top;
-    final double appBarHeight = AppBar().preferredSize.height;
     const double profileCardHeight = 68.0;
-    final double popupTopPosition = topPadding + appBarHeight + profileCardHeight + 8;
+    final double popupTopPosition = topPadding + profileCardHeight + 8;
 
     return Scaffold(
-      appBar: const _CustomAppBar(),
       backgroundColor: const Color(0xFFF3F4F6),
       body: Stack(
         children: [
           ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            children: [
-              _buildProfileCard(),
-              const SizedBox(height: 24),
-              const _SubscriptionCard(),
-              const SizedBox(height: 24),
-              const _SpecialOfferSection(),
-              const SizedBox(height: 24),
+            padding: EdgeInsets.fromLTRB(16.0, topPadding + 8.0, 16.0, 8.0),
+            children: const [
+              SizedBox(height: 68), // Space for profile card
+              SizedBox(height: 24),
+              _CombinedSubscriptionSection(),
+              SizedBox(height: 24),
+              _ActionMenuSection(),
+              SizedBox(height: 24),
+              _SpecialOfferSection(),
+              SizedBox(height: 24),
             ],
           ),
-
+          // Profile card positioned at top
+          Positioned(
+            top: topPadding + 8.0,
+            left: 16,
+            right: 16,
+            child: _buildProfileCard(),
+          ),
+          // Overlay for the account switcher
           if (_isAccountSwitcherOpen)
             GestureDetector(
               onTap: _toggleAccountSwitcher,
-              child: Container(color: Colors.black.withAlpha(51)),
+              child: Container(color: Colors.black.withOpacity(0.2)),
             ),
-          
+          // Animated Account Switcher Popup
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            top: _isAccountSwitcherOpen ? popupTopPosition : -300,
+            top: _isAccountSwitcherOpen ? popupTopPosition : -350,
             left: 16,
             right: 16,
             child: AnimatedOpacity(
@@ -65,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProfileCard() {
+   Widget _buildProfileCard() {
     return InkWell(
       onTap: _toggleAccountSwitcher,
       borderRadius: BorderRadius.circular(16),
@@ -137,146 +145,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _CustomAppBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: const Text(
-        'Home',
-        style: TextStyle(
-          color: Color(0xFF1F2937),
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-      ),
-      backgroundColor: const Color(0xFFF3F4F6),
-      elevation: 0,
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_none_outlined, color: Color(0xFF6B7280)),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-class _AccountSwitcherContent extends StatelessWidget {
-  const _AccountSwitcherContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(102),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: const _AccountSwitcherDetails(),
-    );
-  }
-}
-
-class _AccountSwitcherDetails extends StatelessWidget {
-  const _AccountSwitcherDetails();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Pilih akun',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF111827),
-          ),
-        ),
-        SizedBox(height: 16),
-        Divider(color: Color(0xFFD1D5DB), thickness: 1.5),
-        SizedBox(height: 16),
-        _AccountInfo(),
-      ],
-    );
-  }
-}
-
-class _AccountInfo extends StatelessWidget {
-  const _AccountInfo();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Ahmad-Rizki21',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF2563EB),
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          '1222502221027',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF111827),
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          'ahmad.rizki21@gmail.com',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF111827),
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          'Aktif hingga 28 Jun 2025',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF6B7280),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Part 2: Subscription and Special Offer Sections
-
-class _SubscriptionCard extends StatelessWidget {
-  const _SubscriptionCard();
+class _CombinedSubscriptionSection extends StatelessWidget {
+  const _CombinedSubscriptionSection();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF3B82F6),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF3B82F6).withAlpha(102),
+            color: const Color(0xFF3B82F6).withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -284,110 +163,181 @@ class _SubscriptionCard extends StatelessWidget {
       ),
       child: const Column(
         children: [
-          _SubscriptionHeader(),
-          _SubscriptionInfo(),
+          _SubscriptionCard(),
+          _InternetDetailsCard(),
         ],
       ),
     );
   }
 }
 
-class _SubscriptionHeader extends StatelessWidget {
-  const _SubscriptionHeader();
+class _SubscriptionCard extends StatelessWidget {
+  const _SubscriptionCard();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Aktif hingga',
-            style: TextStyle(
-              color: Colors.white.withAlpha(230),
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            '28 Juni 2025',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const _SubscriptionButtons(),
-        ],
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: const BoxDecoration(
+        color: Color(0xFF3B82F6),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-    );
-  }
-}
-
-class _SubscriptionButtons extends StatelessWidget {
-  const _SubscriptionButtons();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _SubscribeButton(),
-        _PackageButton(),
-      ],
-    );
-  }
-}
-
-class _SubscribeButton extends StatelessWidget {
-  const _SubscribeButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF3B82F6),
-        shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: const Text(
-        'Langganan',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-    );
-  }
-}
-
-class _PackageButton extends StatelessWidget {
-  const _PackageButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
-      child: const Text(
-        'Atur Paket',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
+      child: const IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: _BillingInfoCard()),
+            SizedBox(width: 12),
+            Expanded(child: _PackageInfoCard()),
+          ],
         ),
       ),
     );
   }
 }
 
-class _SubscriptionInfo extends StatelessWidget {
-  const _SubscriptionInfo();
+class _BillingInfoCard extends StatelessWidget {
+  const _BillingInfoCard();
 
   @override
   Widget build(BuildContext context) {
-    // REVISI: Membungkus Container dengan InkWell untuk navigasi
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Tagihan Lunas',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 6, 186, 0),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 11,
+                ),
+              ),
+              SizedBox(width: 4),
+              Icon(
+                Icons.check_circle,
+                color: Color.fromARGB(255, 6, 186, 0),
+                size: 14,
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Aktif hingga',
+            style: TextStyle(
+              color: Color(0xFF6B7280),
+              fontSize: 12,
+            ),
+          ),
+          SizedBox(height: 2),
+          Text(
+            '28 Desember 2025',
+            style: TextStyle(
+              color: Color(0xFF1E40AF),
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          Spacer(),
+          Text(
+            'Tagihan berikutnya 01-01-2026',
+            style: TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Right inner card for package speed information.
+class _PackageInfoCard extends StatelessWidget {
+  const _PackageInfoCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10), // Extra spacing to push Spark down slightly
+          const Center(
+            child: Text(
+              'Spark',
+              style: TextStyle(
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontSize: 20,
+              ),
+            ),
+          ),
+          const Spacer(), // Pushes the speed to center
+          const SizedBox(height: 1), // Extra spacing to push speed down slightly
+          const Center( // Centers the speed horizontally
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '50',
+                  style: TextStyle(
+                    color: Color(0xFF1E40AF), // Dark Blue
+                    fontWeight: FontWeight.w800,
+                    fontSize: 36,
+                    height: 2.2,
+                  ),
+                ),
+                SizedBox(width: 4),
+                Text(
+                  'Mbps',
+                  style: TextStyle(
+                    color: Color(0xFF1E40AF), // Dark Blue
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    height: 1.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Spacer(), // Pushes the ONT info to bottom
+          const Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              'ONT : ZTEGC6937B3',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: Color.fromARGB(255, 19, 19, 19),
+                fontSize: 10,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InternetDetailsCard extends StatelessWidget {
+  const _InternetDetailsCard();
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -396,13 +346,10 @@ class _SubscriptionInfo extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         child: const Row(
           children: [
@@ -411,7 +358,7 @@ class _SubscriptionInfo extends StatelessWidget {
             _InternetInfo(),
             _BroadbandInfo(),
             SizedBox(width: 8),
-            _LineIndicator(),
+            Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),
@@ -532,12 +479,194 @@ class _BroadbandInfo extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _LineIndicator extends StatelessWidget {
   const _LineIndicator();
 
   @override
   Widget build(BuildContext context) {
     return Image.asset('assets/images/Line 2.png', height: 12);
+  }
+}
+
+class _ActionMenuSection extends StatelessWidget {
+  const _ActionMenuSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+        child: Row(
+          children: [
+            _buildActionItem(
+              context: context,
+              icon: Icons.payment,
+              label: 'Pembayaran',
+            ),
+            _buildActionItem(
+              context: context,
+              icon: Icons.support_agent,
+              label: 'Customer\nSupport',
+            ),
+            _buildActionItem(
+              context: context,
+              icon: Icons.speed_outlined,
+              label: 'SpeedTest',
+            ),
+            _buildActionItem(
+              context: context,
+              icon: Icons.router,
+              label: 'Ont / Router',
+            ),
+            _buildActionItem(
+              context: context,
+              icon: FontAwesomeIcons.instagram,
+              label: 'Instagram',
+            ),
+            _buildActionItem(
+              context: context,
+              icon: FontAwesomeIcons.twitter,
+              label: 'Twitter',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionItem({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+  }) {
+    return InkWell(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$label diketuk!')),
+        );
+      },
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FaIcon(icon, color: Colors.black87, size: 28),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1F2937),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AccountSwitcherContent extends StatelessWidget {
+  const _AccountSwitcherContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pilih akun',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF111827),
+            ),
+          ),
+          SizedBox(height: 16),
+          Divider(color: Color(0xFFD1D5DB), thickness: 1.5),
+          SizedBox(height: 16),
+          _AccountInfo(),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountInfo extends StatelessWidget {
+  const _AccountInfo();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ahmad-Rizki21',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF2563EB),
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          '1222502221027',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF111827),
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          'ahmad.rizki21@gmail.com',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF111827),
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          'Aktif hingga 28 Jun 2025',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF6B7280),
+          ),
+        ),
+      ],
+    );
   }
 }
 
